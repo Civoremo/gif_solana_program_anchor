@@ -15,16 +15,29 @@ pub mod gif_solana_program {
         let base_account = &mut ctx.accounts.base_account;
         let user = &mut ctx.accounts.user;
 
+        
+
         let item = ItemStruct {
             gif_link: gif_link.to_string(),
             // user_address: *base_account.to_account_info().key,
             user_address: *user.to_account_info().key,
+            votes: 0
         };
 
-        base_account.gif_list.push(item);
         base_account.total_gifs += 1;
+        base_account.gif_list.push(item);
+        
         Ok(())
     }
+
+    pub fn upvote_gif(ctx: Context<AddVote>, gif_id: u64) -> ProgramResult {
+        let base_account = &mut ctx.accounts.base_account;
+
+        base_account.gif_list[gif_id as usize].votes += 1;
+
+        Ok(())
+    }
+
 }
 
 #[derive(Accounts)]
@@ -48,6 +61,13 @@ pub struct AddGif<'info> {
 pub struct ItemStruct {
     pub gif_link: String,
     pub user_address: Pubkey,
+    pub votes: u64
+}
+
+#[derive(Accounts)]
+pub struct AddVote<'info> {
+    #[account(mut)]
+    pub base_account: Account<'info, BaseAccount>,
 }
 
 #[account]

@@ -40,6 +40,15 @@ const main = async () => {
   console.log("Gif Count ---- ", account.totalGifs.toString());
 
   console.log("Gif List ---- ", account.gifList);
+
+  await program.rpc.upvoteGif(new anchor.BN(0), {
+    accounts: {
+      baseAccount: baseAccount.publicKey,
+    },
+  });
+
+  account = await program.account.baseAccount.fetch(baseAccount.publicKey);
+  console.log("Gif List ---- ", account.gifList);
 };
 
 const runMain = async () => {
