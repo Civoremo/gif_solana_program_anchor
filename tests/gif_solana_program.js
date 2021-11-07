@@ -49,6 +49,14 @@ const main = async () => {
 
   account = await program.account.baseAccount.fetch(baseAccount.publicKey);
   console.log("Gif List ---- ", account.gifList);
+
+  await program.rpc.tipUser(new anchor.BN(10000000), {
+    accounts: {
+      fromUser: provider.wallet.publicKey,
+      toUser: "24xuc8grWYzP8Vb2yzbvXyEafkWvcH8nEazzrGSnRSsc",
+      systemProgram: SystemProgram.programId,
+    },
+  });
 };
 
 const runMain = async () => {

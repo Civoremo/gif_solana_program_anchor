@@ -38,6 +38,23 @@ pub mod gif_solana_program {
         Ok(())
     }
 
+    pub fn tip_user(ctx: Context<SendTip>,  amount: u64) -> ProgramResult {
+        let ix = anchor_lang::solana_program::system_instruction::transfer(
+            &ctx.accounts.from_user.key(),
+            &ctx.accounts.to_user.key(),
+            amount,
+        );
+        anchor_lang::solana_program::program::invoke(
+            &ix,
+            &[
+                ctx.accounts.from_user.to_account_info(),
+                ctx.accounts.to_user.to_account_info(),
+            ],
+        )?;
+        
+        Ok(())
+    }
+
 }
 
 #[derive(Accounts)]
@@ -68,6 +85,15 @@ pub struct ItemStruct {
 pub struct AddVote<'info> {
     #[account(mut)]
     pub base_account: Account<'info, BaseAccount>,
+}
+
+#[derive(Accounts)]
+pub struct SendTip<'info> {
+    #[account(mut)]
+    pub from_user: Signer<'info>,
+    #[account(mut)]
+    pub to_user: AccountInfo<'info>,
+    system_program: Program<'info, System>
 }
 
 #[account]
